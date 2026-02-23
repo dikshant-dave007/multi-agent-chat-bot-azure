@@ -1,0 +1,82 @@
+name: Build and deploy Python app to Azure Web App - yash-multi-agent-chat-bot-app
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python version
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+          cache: 'pip'
+
+      - name: Create and start virtual environment
+        run: |
+          python -m venv venv
+          source venv/bin/activate
+          echo "VIRTUAL_ENV=$(python -c 'import sys; print(sys.prefix)')" >> $GITHUB_ENV
+          echo "$GITHUB_ENV=/home/runner/work/azure_multi_agent_chat_bot_poc/venv/bin" >> $GITHUB_PATH
+
+      - name: Install dependencies
+        run: |
+          source venv/bin/activate
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run linting (pylint) - Optional
+        continue-on-error: true
+        run: |
+          source venv/bin/activate
+          pylint **/*.py || true
+
+      - name: Run pytest for unit tests
+        continue-on-error: true
+        run: |
+          source venv/bin/activate
+          pytest tests/ -v --tb=short || true
+
+      - name: Upload artifact for deployment jobs
+        uses: actions/upload-artifact@v4
+        with:
+          name: python-app
+          path: |
+            .
+            !venv
+            !.git
+            !.gitignore
+            !README.md
+            !.pytest_cache
+            !*.pyc
+            !__pycache__
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    environment:
+      name: 'Production'
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+
+    steps:
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v4
+        with:
+          name: python-app
+          path: .
+
+      - name: 'Deploy to Azure Web App'
+        uses: azure/webapps-deploy@v3
+        id: deploy-to-webapp
+        with:
+          app-name: 'yash-multi-agent-chat-bot-app'
+          slot-name: 'Production'
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          package: .
