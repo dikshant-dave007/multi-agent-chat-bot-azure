@@ -1,0 +1,34 @@
+Multi-Agent Architecture with Semantic Kernel
+
+Orchestrator Agent
+
+A main orchestrator agent coordinates all operations
+Analyzes incoming queries to understand user intent
+Routes requests to the appropriate specialized agent based on intent classification
+Uses Semantic Kernel's planner or intent recognition capabilities to determine which agent should handle each task
+Aggregates responses from multiple agents when needed
+
+Intent Classification & Agent Selection
+
+Semantic Kernel analyzes the query semantics to identify intent
+The orchestrator maps intents to specific agents (e.g., data retrieval agent, processing agent, analytics agent)
+Each specialized agent is registered with the orchestrator and handles specific domains or tasks
+
+Data Layer
+
+Azure Cosmos DB serves as the primary data store
+Agents perform database operations (CRUD) through Cosmos DB SDK or Semantic Kernel connectors
+Store conversation history, agent state, and application data
+
+Caching Strategy
+
+Implement caching at the Semantic Kernel level to reduce redundant LLM calls
+Cache frequent queries, agent responses, and embedding results
+Use memory connectors (volatile or persistent) for session-based caching
+Consider Azure Cache for Redis for distributed caching across agents
+
+Technology Stack
+
+Semantic Kernel: Agent framework, orchestration, and plugin management
+Azure AI Foundry: Model deployment, management, and monitoring
+Azure Cosmos DB: NoSQL database for scalable data storage

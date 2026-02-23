@@ -1,0 +1,50 @@
+# FastAPI and Web Framework
+streamlit
+fastapi
+uvicorn[standard]
+
+# Pydantic
+pydantic
+pydantic-settings
+
+# Semantic Kernel
+semantic-kernel
+
+# Azure SDK
+azure-identity
+azure-keyvault-secrets
+azure-cosmos
+
+# OpenAI Integration
+openai
+
+# Async and Concurrency
+aiohttp
+
+# Data Validation and Serialization
+python-multipart
+email-validator
+
+# Utilities
+python-dotenv
+pyyaml
+
+# Monitoring and Logging
+structlog
+
+# HTTP and Networking
+httpx
+tenacity
+
+# Date and Time
+python-dateutil
+
+# LangChain Ecosystem
+langgraph
+langchain
+langchain-community
+langchain-core
+langchain-openai
+
+# Altair
+altair
